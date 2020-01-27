@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.summary      = "R2 Streamer"
   s.homepage     = "http://readium.github.io"
   s.author       = { "Aferdita Muriqi" => "aferdita.muriqi@gmail.com" }
-  s.source       = { :git => "https://github.com/readium/r2-streamer-swift.git", :tag => "1.2.5" }
+  s.source       = { :git => "https://github.com/monterosa/r2-streamer-swift.git", :tag => "1.2.7" }
   s.xcconfig = { 'HEADER_SEARCH_PATHS' => '$(SDKROOT)/usr/include/libxml2' }
   s.exclude_files = ["**/Info*.plist"]
   s.requires_arc = true
