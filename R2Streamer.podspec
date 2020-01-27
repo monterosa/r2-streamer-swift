@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
   s.source_files  = "r2-streamer-swift/**/*.{m,h,swift}"
   s.platform     = :ios
   s.ios.deployment_target = "10.0"
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 
   s.libraries =  'z'
 
