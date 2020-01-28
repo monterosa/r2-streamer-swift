@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "R2Streamer"
-  s.version      = "1.2.8"
+  s.version      = "1.2.9"
   s.license      = "BSD 3-Clause License"
   s.summary      = "R2 Streamer"
   s.homepage     = "http://readium.github.io"
