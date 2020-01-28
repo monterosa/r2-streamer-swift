@@ -18,10 +18,18 @@ Pod::Spec.new do |s|
 
   s.libraries =  'z'
 
+  s.subspec 'GCDWebServer' do |g|
+    g.dependency 'GCDWebServer'
+    g.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
+  end
+  
+  s.subspec 'Minizip' do |m|
+    m.dependency 'Minizip'
+    m.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
+  end
+  
   s.dependency 'R2Shared'
   s.dependency 'Fuzi'
   s.dependency 'CryptoSwift'
-  s.dependency 'GCDWebServer'
-  s.dependency 'Minizip'
 
 end
