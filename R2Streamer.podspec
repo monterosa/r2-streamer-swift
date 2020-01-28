@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "R2Streamer"
-  s.version      = "1.3.0"
+  s.version      = "1.3.1"
   s.license      = "BSD 3-Clause License"
   s.summary      = "R2 Streamer"
   s.homepage     = "http://readium.github.io"
@@ -20,11 +20,13 @@ Pod::Spec.new do |s|
 
   s.subspec 'GCDWebServer' do |g|
     g.dependency 'GCDWebServer'
+    g.xcconfig = { 'DEFINES_MODULE' => 'YES' }
     g.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   end
   
   s.subspec 'Minizip' do |m|
     m.dependency 'Minizip'
+    g.xcconfig = { 'DEFINES_MODULE' => 'YES' }
     m.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   end
   
