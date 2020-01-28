@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
   
   s.subspec 'Minizip' do |m|
     m.dependency 'Minizip'
-    g.xcconfig = { 'DEFINES_MODULE' => 'YES' }
+    m.xcconfig = { 'DEFINES_MODULE' => 'YES' }
     m.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   end
   
