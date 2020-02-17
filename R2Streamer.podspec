@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "R2Streamer"
-  s.version      = "1.2.5"
+  s.version      = "1.3.1"
   s.license      = "BSD 3-Clause License"
   s.summary      = "R2 Streamer"
   s.homepage     = "http://readium.github.io"
@@ -18,10 +18,10 @@ Pod::Spec.new do |s|
 
   s.libraries =  'z'
 
+  s.dependency 'Minizip'
+  s.dependency 'GCDWebServer'
   s.dependency 'R2Shared'
   s.dependency 'Fuzi'
   s.dependency 'CryptoSwift'
-  s.dependency 'GCDWebServer'
-  s.dependency 'Minizip'
 
 end
