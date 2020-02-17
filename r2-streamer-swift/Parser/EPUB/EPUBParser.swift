@@ -22,6 +22,9 @@ struct EPUBConstant {
     public static let mimetypeOEBPS = "application/oebps-package+xml"
     /// Media Overlays URL.
     public static let mediaOverlayURL = "media-overlay?resource="
+    
+    public static let pageLength = 3500
+    
 }
 
 /// Errors thrown during the parsing of the EPUB
@@ -80,6 +83,7 @@ final public class EpubParser: PublicationParser {
         let drm = scanForDRM(in: container)
         // Parse the META-INF/Encryption.xml.
         parseEncryption(from: container, to: &publication, drm)
+        parseContentLengthInfo(from: container, to: &publication)
         
         func parseRemainingResource(protectedBy drm: DRM?) throws {
             /// The folowing resources could be encrypted, hence we use the fetcher.
@@ -280,11 +284,8 @@ final public class EpubParser: PublicationParser {
             var lastPositionOfPreviousResource = 0
             var positionList = publication.readingOrder.flatMap { link -> [Locator] in
                 let (lastPosition, positionList): (Int, [Locator]) = {
-                    if publication.metadata.rendition.layout(of: link) == .fixed {
-                        return makeFixedPositionList(of: link, from: lastPositionOfPreviousResource)
-                    } else {
-                        return makeReflowablePositionList(of: link, in: container, from: lastPositionOfPreviousResource)
-                    }
+                    /// Used only fixed position for handlind only position as a Double, pages calculation done intenrally only
+                    return makeFixedPositionList(of: link, from: lastPositionOfPreviousResource)
                 }()
                 lastPositionOfPreviousResource = lastPosition
                 return positionList
@@ -319,13 +320,14 @@ final public class EpubParser: PublicationParser {
         return (position, positionList)
     }
     
+    // TODO: Skip this part in future
     private static func makeReflowablePositionList(of link: Link, in container: Container, from startPosition: Int) -> (Int, [Locator]) {
         // If the resource is encrypted, we use the originalLength declared in encryption.xml instead of the ZIP entry length
         let length = link.properties.encryption?.originalLength
             ?? Int((try? container.dataLength(relativePath: link.href)) ?? 0)
         
         // Arbitrary byte length of a single page in a resource.
-        let pageLength = 1024
+        let pageLength = EPUBConstant.pageLength
         let pageCount = max(1, Int(ceil((Double(length) / Double(pageLength)))))
         
         let positionList = (1...pageCount).map { position in
@@ -342,3 +344,25 @@ final public class EpubParser: PublicationParser {
     }
     
 }
+
+extension EpubParser {
+    
+    // This parsing can probably not handle DRM-protected files! We will probably need to use the fetcher for that.
+    static func parseContentLengthInfo(from container: Container, to publication: inout Publication) {
+        var contentLengthTuples = [(_: Link, _: Int)]()
+        for link in publication.readingOrder {
+            let href = link.href
+            var data = try? container.data(relativePath: href)
+            if data == nil, let urlDecodedHref = href.removingPercentEncoding {
+                data = try? container.data(relativePath: urlDecodedHref)
+                if data != nil { link.href = urlDecodedHref }
+            }
+            let dataLength = data?.count ?? 0
+            let itemContentLength = (spineItem: link, contentLength: dataLength)
+            contentLengthTuples.append(itemContentLength)
+        }
+        
+        publication.contentLengthInfo = ContentLengthInfo(contentLengthTuples: contentLengthTuples)
+    }
+}
+
